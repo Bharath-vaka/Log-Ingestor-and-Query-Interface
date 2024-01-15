@@ -1,0 +1,137 @@
+.container{
+    margin-top: 30px;
+    margin-left: 5%;
+    margin-bottom: 50px;
+    max-width: 90%;
+    border: 1px solid rgba(0,0,0,.125);
+}
+
+h1,h3{
+    font-family: 'Kdam Thmor Pro', sans-serif;
+    margin-top: 30px;
+    text-align: center;
+}
+
+.card1{
+    min-height: 200px;
+    min-width: 650px;
+    margin-top: 50px;
+    margin-left: 40px;
+    margin-right: 30px;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 15px;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+    
+}
+
+.card2{
+    min-height: 270px;
+    min-width: 30%;
+    max-height: 250px;
+    margin-top: 50px;
+    border-right: 20px;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 15px;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+}
+
+.card3{
+    min-width: 650px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-left: 40px;
+    margin-right: 30px;
+    padding-top: 10px;
+    padding-bottom: 25px;
+    padding-left: 20px;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 15px;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+}
+
+.card4{
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    margin-left: 40px;
+    margin-right: 30px;
+    padding-top: 10px;
+    padding-bottom: 25px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 15px;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+}
+
+.cardbody{
+    padding: 40px 20px 0px 0px;
+}
+
+
+.form-control {
+    width: 40%;
+}
+
+.dynamic-filters {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+}
+
+.dataTables_filter {
+    margin-top: 20px;
+}
+
+.search-box{
+    margin-left: 20px;
+    
+}
+
+
+label{
+    margin-right: 15px;
+}
+
+input{
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  padding: 12px 16px 12px 16px;
+
+}
+
+select {
+    padding: 12px 16px 12px 16px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    margin-right: 15px;
+  }
+
+button{
+    padding-top: 20px;
+    margin-bottom: 10px;
+    width: 100%;
+
+    
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+        

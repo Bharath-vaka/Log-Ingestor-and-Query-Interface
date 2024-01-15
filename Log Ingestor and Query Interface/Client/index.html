@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Query Filter</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&display=swap" rel="stylesheet"> 
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="./style.css">
+
+</head>
+<body>
+    <h1>Log Query Filter</h1>
+    <div class="container">
+        <div class="row">
+            <div class="card1">
+                <h3>Filters</h3>
+                <div card="body">
+                    
+                    <div class="dynamic-filters" id="dynamicFilters">
+                        <!-- Dynamic filters will be added here -->
+                    </div>
+
+                </div>
+            </div>
+            <div class="card2">
+                <h3>Operations</h3>
+                <div class="card-body">
+                    
+                     <!-- Add Dynamic Filters buttons -->
+                    <div class="dynamic-filters">
+                        <button onclick="addDynamicFilter()" class="btn btn-primary">Add Filter</button><br>
+                        <button onclick="removeDynamicFilter()" class="btn btn-danger">Remove Filter</button><br>
+                        <button onclick="applyDynamicFilters()" class="btn btn-success">Apply Filters</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card3">
+                <div card="body">
+                    <div class="search-box search">
+                        <label for="searchInput"><h3>Global Search:</h3></label>
+                        <input type="text" id="searchInput" class="dataTables_filter" placeholder="Search..">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card4">
+                <div card="body" class = cardbody>
+                    <table id="example" class="display">
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                                <th>Message</th>
+                                <th>ResourceID</th>
+                                <th>Timestamp</th>
+                                <th>TraceID</th>
+                                <th>SpanID</th>
+                                <th>Commit</th>
+                                <th>ParentResourceID</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery and DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function() {
+            var table = $('#example').DataTable({
+                ajax: 'search_logs.php', // Replace with the path to your PHP script
+                columns: [
+                    { data: "level" },
+                    { data: "message" },
+                    { data: "resourceId" },
+                    { data: "timestamp" },
+                    { data: "traceId" },
+                    { data: "spanId" },
+                    { data: "commit" },
+                    { data: "parentResourceId" }
+                ]
+            });
+
+            $('#searchInput').on('keyup', function() {
+                applyDynamicFilters();
+            });
+
+            $('#dynamicFilters').on('keyup', '.dataTables_filter', function() {
+                applyDynamicFilters();
+            });
+        });
+
+        function addDynamicFilter() {
+            var columnNames = getColumnNames();
+            var dynamicFilter =
+                '<div class="search-box">' +
+                '<label for="dynamicColumn">Filter :</label>' +
+                '<select class="dynamic-column" name="dynamicColumn">' +
+                '<option value="" disabled selected>Select Column</option>';
+
+            for (var i = 0; i < columnNames.length; i++) {
+                dynamicFilter += '<option value="' + columnNames[i] + '">' + columnNames[i] + '</option>';
+            }
+
+            dynamicFilter +=
+                '</select>' +
+                '<label for="dynamicValue">Value :</label>' +
+                '<input type="text" class="dataTables_filter dynamic-value" placeholder="Search..">' +
+                '</div>';
+
+            $('#dynamicFilters').append(dynamicFilter);
+        }
+
+        function removeDynamicFilter() {
+            $('#dynamicFilters').children('.search-box:last').remove();
+            applyDynamicFilters();
+        }
+
+        function applyDynamicFilters() {
+            var dynamicFilters = $('#dynamicFilters .search-box');
+            var searchConditions = [];
+
+            dynamicFilters.each(function() {
+                var column = $(this).find('.dynamic-column').val();
+                var value = $(this).find('.dynamic-value').val();
+
+                if (column && value) {
+                    searchConditions.push({ column: column, value: value });
+                }
+            });
+
+            var globalSearchValue = $('#searchInput').val();
+            if (globalSearchValue) {
+                searchConditions.push({ column: 'global', value: globalSearchValue });
+            }
+
+            applyFilters(searchConditions);
+        }
+
+        function applyFilters(searchConditions) {
+            var table = $('#example').DataTable();
+            table.clear();
+
+            $.ajax({
+                url: 'search_logs.php',
+                method: 'POST',
+                data: { searchConditions: JSON.stringify(searchConditions) },
+                dataType: 'json',
+                success: function(response) {
+                    table.rows.add(response.data).draw();
+                }
+            });
+        }
+
+        function getColumnNames() {
+            var table = $('#example').DataTable();
+            var columnNames = [];
+
+            table.columns().every(function() {
+                columnNames.push(this.header().textContent);
+            });
+
+            return columnNames;
+        }
+    </script>
+
+</body>
+</html>
